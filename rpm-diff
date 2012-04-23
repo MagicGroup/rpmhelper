@@ -29,7 +29,7 @@ D bar-2.rpm foo-1.rpm
 'R': remove, 'N': new, 'U': upgrade, 'D': downgrade
 """
 def rpmdiff(repo1, repo2):
-    import rpmhelper
+    import mgcrpmhelper
     rpm_list1 = rpmhelper.read_from_location(repo1)
     rpm_list2 = rpmhelper.read_from_location(repo2)
     diff_list = rpmhelper.diff_rpmlist(rpm_list1, rpm_list2,

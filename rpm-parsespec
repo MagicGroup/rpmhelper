@@ -16,7 +16,7 @@
 
 import os
 import sys
-import rpmhelper
+import mgcrpmhelper
 
 help_msg = """Usage: rpm-parsespec <rpmspecfile>
 rpm-parsespec will generate output like below:
