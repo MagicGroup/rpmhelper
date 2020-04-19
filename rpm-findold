@@ -36,8 +36,8 @@ help_msg = """Usage: rpm-findold {dir | rpmlistfile}"""
         
 def rpm_find_old(repo):
     import mgcrpmhelper
-    rpmfn_list = rpmhelper.read_from_location(repo)
-    rpmfn_map = rpmhelper.sort_rpmlist(rpmfn_list)
+    rpmfn_list = mgcrpmhelper.read_from_location(repo)
+    rpmfn_map = mgcrpmhelper.sort_rpmlist(rpmfn_list)
     for li in list(rpmfn_map.values()):
         if len(li) > 1:
             for i in range(1, len(li)):

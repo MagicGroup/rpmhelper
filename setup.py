@@ -2,7 +2,7 @@
 
 from distutils.core import setup, Extension
 
-setup(name='rpmhelper', version='0.02',
+setup(name='mgcrpmhelper', version='0.04',
       description='Helper scripts for rpm',
       author='Levin Du', author_email='zsdjw@21cn.com',
       data_files=[('bin', ['rpm-diff',
@@ -17,4 +17,4 @@ setup(name='rpmhelper', version='0.02',
                            'mb-fetch-fcpkg', 
                            ])],
       url='http://www.linuxfans.org',
-      packages=['rpmhelper'])
+      packages=['mgcrpmhelper'])

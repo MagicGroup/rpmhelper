@@ -30,9 +30,9 @@ D bar-2.rpm foo-1.rpm
 """
 def rpmdiff(repo1, repo2):
     import mgcrpmhelper
-    rpm_list1 = rpmhelper.read_from_location(repo1)
-    rpm_list2 = rpmhelper.read_from_location(repo2)
-    diff_list = rpmhelper.diff_rpmlist(rpm_list1, rpm_list2,
+    rpm_list1 = mgcrpmhelper.read_from_location(repo1)
+    rpm_list2 = mgcrpmhelper.read_from_location(repo2)
+    diff_list = mgcrpmhelper.diff_rpmlist(rpm_list1, rpm_list2,
                              full_sync = True)
     for left, right in diff_list:
         if not left and right:

@@ -25,7 +25,7 @@ name rpmhelper
 url http://www.linuxfans.org
 version 0.02
 release 1mgc
-source0 rpmhelper-0.02.tar.gz
+source0 rpmhelper-0.04.tar.xz
 patch0 rpmhelper-path.patch
 license gpl
 group Application/tools
@@ -66,7 +66,7 @@ def parse_spec(spec_fn):
     def cmp_func(a, b):
         return get_weight(a) - get_weight(b)
         
-    d = rpmhelper.parse_spec(spec_fn)
+    d = mgcrpmhelper.parse_spec(spec_fn)
     keys = list(d.keys())
     keys.sort(cmp_func)
     for k in keys:

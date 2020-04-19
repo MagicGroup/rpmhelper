@@ -36,8 +36,8 @@ help_msg = """Usage: rpmnewest {dir | rpmlistfile}"""
         
 def rpm_find_newest(repo):
     import mgcrpmhelper
-    rpmfn_list = rpmhelper.read_from_location(repo)
-    rpmfn_map = rpmhelper.sort_rpmlist(rpmfn_list)
+    rpmfn_list = mgcrpmhelper.read_from_location(repo)
+    rpmfn_map = mgcrpmhelper.sort_rpmlist(rpmfn_list)
     for li in list(rpmfn_map.values()):
         print(li[0].fullname)
 
