@@ -14,7 +14,7 @@
 #
 
 import os
-from misclib import *
+from .misclib import *
 
 def compare_version(ver1, ver2):
     """Compare version ver1 and ver2.
@@ -76,10 +76,10 @@ class RpmBasicInfo:
     def __getattr__(self, k):
         """ handy use like basic_info.name, basic_info.arch."""
         if self.nevra == None:
-            raise RuntimeError, "nevra not initialized yet."
+            raise RuntimeError("nevra not initialized yet.")
         if k in RpmBasicInfo._attrs:
             return self.nevra[RpmBasicInfo._attrs[k]]
-        raise AttributeError, k
+        raise AttributeError(k)
 
     def __str__(self):
         return self.fullname
@@ -88,9 +88,8 @@ class RpmBasicInfo:
         if other==None:
             return 1
         if self.name != other.name:
-            raise RpmHelperError, \
-                  "Cannot compare rpms with different names: %s and %s." \
-                  % (self.name, other.name)
+            raise RpmHelperError("Cannot compare rpms with different names: %s and %s." \
+                  % (self.name, other.name))
         r = compare_version(self.version, other.version)
         if r != 0:
             return r
@@ -124,7 +123,7 @@ def parseFilename(rpm_fullname):
     return RpmBasicInfo((name, None, version, release, arch, rpm_fullname))
 
 def make_rpmlist_from_html(html_str):
-    from HTMLParser import HTMLParser
+    from html.parser import HTMLParser
     class MyHTMLParser(HTMLParser):
         def __init__(self):
             self.href_list = []
@@ -184,7 +183,7 @@ def sort_rpmlist(rpmlist):
         else:
             o = parseFilename(rpm_item)
             d.setdefault(o.name, []).append(o)
-    for k in d.keys():
+    for k in list(d.keys()):
         if len(d[k]) > 1:
             d[k].sort(reverse=True)
     return d
@@ -202,7 +201,7 @@ def diff_rpmlist(rpmlist1, rpmlist2, full_sync = True):
     d2 = sort_rpmlist(rpmlist2)
 
     r = []
-    for rpm_name in unique(d1.keys(), d2.keys()):
+    for rpm_name in unique(list(d1.keys()), list(d2.keys())):
         if rpm_name in d1:
             r1 = d1[rpm_name][0]
         else:
@@ -233,7 +232,7 @@ def diff_rpmlist_with_data(rpmlist1, rpmlist2):
     d2 = sort_rpmlist(rpmlist2)
 
     r = []
-    for rpm_name in unique(d1.keys(), d2.keys()):
+    for rpm_name in unique(list(d1.keys()), list(d2.keys())):
         if rpm_name in d1:
             r1 = d1[rpm_name][0]
         else:
@@ -254,11 +253,11 @@ def read_from_location(location):
         s = sys.stdin.read()
 
     elif location.startswith("http://"):
-        import urllib
+        import urllib.request, urllib.parse, urllib.error
         try:
-            s = urllib.urlopen(location).read()
+            s = urllib.request.urlopen(location).read()
         except:
-            print "Error reading from %s." % location
+            print("Error reading from %s." % location)
             raise
         content_type = "html"
 
@@ -279,7 +278,7 @@ def read_from_location(location):
         content_type = "list"
 
     else:
-        raise RuntimeError, "Unknown location %s." % location
+        raise RuntimeError("Unknown location %s." % location)
 
     if content_type == "html":
         s = make_rpmlist_from_html(s)
