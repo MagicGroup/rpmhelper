@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 #
 # rpm-diff - generate diff list for rpm files.
 #

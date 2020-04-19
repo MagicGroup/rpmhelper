@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 # Fetch fedora src.rpm
 
 PWD=`pwd`

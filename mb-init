@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 MBDIR=`pwd`
 TIMESTAMP=`/bin/date +"%Y%m%d%H%M%S"`
