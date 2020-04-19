@@ -59,7 +59,7 @@ def parse_spec(spec_fn):
                     i = 0
                 w = 20000 + i
             else:
-                print k
+                print(k)
                 raise
         return w
     
@@ -67,10 +67,10 @@ def parse_spec(spec_fn):
         return get_weight(a) - get_weight(b)
         
     d = rpmhelper.parse_spec(spec_fn)
-    keys = d.keys()
+    keys = list(d.keys())
     keys.sort(cmp_func)
     for k in keys:
-        print k, d[k]
+        print(k, d[k])
 
 def fix_import_path(prog):
     cwd = os.getcwd()
@@ -86,12 +86,12 @@ def fix_import_path(prog):
 def main():
     fix_import_path(sys.argv[0])
     if len(sys.argv) != 2:
-        print help_msg
+        print(help_msg)
         sys.exit(-1)
     try:
         parse_spec(sys.argv[1])
-    except Exception, e:
-        print >>sys.stderr, e
+    except Exception as e:
+        print(e, file=sys.stderr)
         raise
         sys.exit(-1)
     sys.exit(0)

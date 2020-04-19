@@ -38,10 +38,10 @@ def rpm_find_old(repo):
     import mgcrpmhelper
     rpmfn_list = rpmhelper.read_from_location(repo)
     rpmfn_map = rpmhelper.sort_rpmlist(rpmfn_list)
-    for li in rpmfn_map.values():
+    for li in list(rpmfn_map.values()):
         if len(li) > 1:
             for i in range(1, len(li)):
-                print li[i].fullname
+                print(li[i].fullname)
 
 def fix_import_path(prog):
     cwd = os.getcwd()
@@ -57,12 +57,12 @@ def fix_import_path(prog):
 def main():
     fix_import_path(sys.argv[0])
     if len(sys.argv) != 2:
-        print help_msg
+        print(help_msg)
         sys.exit(-1)
     try:
         rpm_find_old(sys.argv[1])
-    except Exception, e:
-        print >>sys.stderr, e
+    except Exception as e:
+        print(e, file=sys.stderr)
         sys.exit(-1)
     sys.exit(0)
     

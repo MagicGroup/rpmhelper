@@ -36,20 +36,20 @@ def rpmdiff(repo1, repo2):
                              full_sync = True)
     for left, right in diff_list:
         if not left and right:
-            print 'N %s %s' % (dummy_fn, right.fullname)
+            print('N %s %s' % (dummy_fn, right.fullname))
         elif left and not right:
-            print 'R %s %s' % (left.fullname, dummy_fn)
+            print('R %s %s' % (left.fullname, dummy_fn))
         elif left and right:
-            print '%s %s %s' % \
+            print('%s %s %s' % \
                 (left < right and 'U' or 'D',
                  left.fullname,
-                 right.fullname)
+                 right.fullname))
         
 def get_rpm_clean_list():
     result = []
     rpmfn_list = make_rpmlist_from_dir(local_repo)
     rpmfn_map = sort_rpmlist(rpmfn_list)
-    for li in rpmfn_map.values():
+    for li in list(rpmfn_map.values()):
         if len(li) > 1:
             result.append((li[0].fullname, 0))
             for i in range(1, len(li)):
@@ -70,12 +70,12 @@ def fix_import_path(prog):
 def main():
     fix_import_path(sys.argv[0])
     if len(sys.argv) != 3:
-        print help_msg
+        print(help_msg)
         sys.exit(-1)
     try:
         rpmdiff(sys.argv[1], sys.argv[2])
-    except Exception, e:
-        print >>sys.stderr, e
+    except Exception as e:
+        print(e, file=sys.stderr)
         sys.exit(-1)
     sys.exit(0)
     

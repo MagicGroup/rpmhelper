@@ -3,7 +3,7 @@
 import snack
 import os
 import shutil
-import ConfigParser
+import configparser
 import types
 import time
 import subprocess
@@ -95,7 +95,7 @@ def unique(*s):
     except TypeError:
         del u  # move on to the next method
     else:
-        return u.keys()
+        return list(u.keys())
 
     # We can't hash all the elements.  Second fastest is to sort,
     # which brings the equal elements together; then duplicates are
@@ -156,10 +156,10 @@ class RpmBasicInfo:
     def __getattr__(self, k):
         """ handy use like basic_info.name, basic_info.arch."""
         if self.nevra == None:
-            raise RuntimeError, "nevra not initialized yet."
+            raise RuntimeError("nevra not initialized yet.")
         if k in RpmBasicInfo._attrs:
             return self.nevra[RpmBasicInfo._attrs[k]]
-        raise AttributeError, k
+        raise AttributeError(k)
 
     def __str__(self):
         return self.fullname
@@ -168,9 +168,8 @@ class RpmBasicInfo:
         if other==None:
             return 1
         if self.name != other.name:
-            raise RpmHelperError, \
-                  "Cannot compare rpms with different names: %s and %s." \
-                  % (self.name, other.name)
+            raise RpmHelperError("Cannot compare rpms with different names: %s and %s." \
+                  % (self.name, other.name))
         r = compare_version(self.version, other.version)
         if r != 0:
             return r
@@ -204,7 +203,7 @@ def parseFilename(rpm_fullname):
     return RpmBasicInfo((name, None, version, release, arch, rpm_fullname))
 
 def make_rpmlist_from_html(html_str):
-    from HTMLParser import HTMLParser
+    from html.parser import HTMLParser
     class MyHTMLParser(HTMLParser):
         def __init__(self):
             self.href_list = []
@@ -264,7 +263,7 @@ def sort_rpmlist(rpmlist):
         else:
             o = parseFilename(rpm_item)
             d.setdefault(o.name, []).append(o)
-    for k in d.keys():
+    for k in list(d.keys()):
         if len(d[k]) > 1:
             d[k].sort(reverse=True)
     return d
@@ -282,7 +281,7 @@ def diff_rpmlist(rpmlist1, rpmlist2, full_sync = True):
     d2 = sort_rpmlist(rpmlist2)
 
     r = []
-    for rpm_name in unique(d1.keys(), d2.keys()):
+    for rpm_name in unique(list(d1.keys()), list(d2.keys())):
         if rpm_name in d1:
             r1 = d1[rpm_name][0]
         else:
@@ -313,7 +312,7 @@ def diff_rpmlist_with_data(rpmlist1, rpmlist2):
     d2 = sort_rpmlist(rpmlist2)
 
     r = []
-    for rpm_name in unique(d1.keys(), d2.keys()):
+    for rpm_name in unique(list(d1.keys()), list(d2.keys())):
         if rpm_name in d1:
             r1 = d1[rpm_name][0]
         else:
@@ -334,11 +333,11 @@ def read_from_location(location):
         s = sys.stdin.read()
 
     elif location.startswith("http://"):
-        import urllib
+        import urllib.request, urllib.parse, urllib.error
         try:
-            s = urllib.urlopen(location).read()
+            s = urllib.request.urlopen(location).read()
         except:
-            print "Error reading from %s." % location
+            print("Error reading from %s." % location)
             raise
         content_type = "html"
 
@@ -356,7 +355,7 @@ def read_from_location(location):
         content_type = "list"
 
     else:
-        raise RuntimeError, "Unknown location %s." % location
+        raise RuntimeError("Unknown location %s." % location)
 
     if content_type == "html":
         s = make_rpmlist_from_html(s)
@@ -399,11 +398,11 @@ class BaseUI:                           # Base UI class
 
     def _NormalizeButtons(self, raw_buttons):
         "Formalize to [(key, disp), ...]"
-        if type(raw_buttons) not in (types.ListType, types.TupleType):
+        if type(raw_buttons) not in (list, tuple):
             raw_buttons = [raw_buttons]
         result = []
         for button in raw_buttons:
-            if type(button) is types.TupleType:
+            if type(button) is tuple:
                 result.append((button[0], button[1]))
             else:
                 try:
@@ -452,7 +451,7 @@ class BaseUI:                           # Base UI class
         return self.MessageBox("Confirm", prompt, self.MB_YESNO) == self.MB_YES
 
     def debug(self, arg):
-        print arg
+        print(arg)
 
 # Some injection to snack
 snack.hotkeys["ESC"] = 27        # Esc key
@@ -521,7 +520,7 @@ class TextUI(BaseUI):
 
     def debug(self, arg):
         self.screen.suspend()
-        print arg
+        print(arg)
         time.sleep(5)
         self.screen.resume()
 
@@ -530,7 +529,7 @@ def get_rpm_clean_list():
     result = []
     rpmfn_list = make_rpmlist_from_dir(local_repo)
     rpmfn_map = sort_rpmlist(rpmfn_list)
-    for li in rpmfn_map.values():
+    for li in list(rpmfn_map.values()):
         if len(li) > 1:
             result.append((li[0].fullname, 0))
             for i in range(1, len(li)):
@@ -565,7 +564,7 @@ def check_backup_path(path, ui, edit_mode = False):
 
         try:
             os.makedirs(path)
-        except OSError, e:
+        except OSError as e:
             ui.ErrorBox("Make directory failed: %s" % str(e))
             return (False, path)
 
@@ -591,7 +590,7 @@ def fetch_rpm_update_list(repo1_path, repo2_path, ui):
                                      width = ui.screen.width * 3 / 4)
     try:
         rpm_list2 = read_from_location(repo2_path)
-    except Exception, e:
+    except Exception as e:
         progress_win.popup()
         ui.ErrorBox(("Pull error: %s" % str(e)))
         return None
@@ -686,7 +685,7 @@ class PullRpmWindow(TextUI):
             return
 
         while True:
-            repos = pull_repos.keys()
+            repos = list(pull_repos.keys())
             choose = self.ListboxChoiceWindow("Pull Rpms", "Please select repos:",
                                               repos,
                                               buttons = (("Pull", "pull"),
@@ -709,7 +708,7 @@ class PullRpmWindow(TextUI):
         chktree = snack.CheckboxTree(height = screen.height - 12,
                                      scroll = 1)
         item_list = []
-        for k, v in update_list.items():
+        for k, v in list(update_list.items()):
             if v:
                 chktree.append("U %s" % k, selected = 1)
                 item_list.append("U %s" % k)
@@ -836,7 +835,7 @@ Add Edit Delete Cancel
                                      returnExit = 1,
                                      col_labels = ("Name", "Path"),
                                      adjust_width = 1)
-            for name, path in pull_repos.items():
+            for name, path in list(pull_repos.items()):
                 listbox.append((name, path), name)
 
             grid = snack.GridForm(screen, "Repos Setup", 1, 2)
@@ -907,32 +906,32 @@ Add Edit Delete Cancel
 def load_config():
     global backup_path, pull_repos
     if os.path.exists(".magicrpm.rc"):
-        parser = ConfigParser.ConfigParser()
+        parser = configparser.ConfigParser()
         parser.read(".magicrpm.rc")
         try:
             backup_path = parser.get("clean", "backup_path")
-        except (ConfigParser.NoSectionError,
-                ConfigParser.NoOptionError), e:
+        except (configparser.NoSectionError,
+                configparser.NoOptionError) as e:
             backup_path = ""
             raise
         try:
             pull_repos = dict(parser.items("pull"))
-        except ConfigParser.NoSectionError, e:
+        except configparser.NoSectionError as e:
             pull_repos = {}
             raise
 
 def save_config():
-    parser = ConfigParser.ConfigParser()
+    parser = configparser.ConfigParser()
     parser.add_section("clean")
     parser.set("clean", "backup_path", backup_path)
     parser.add_section("pull")
-    for k, v in pull_repos.items():
+    for k, v in list(pull_repos.items()):
         parser.set("pull", k, v)
     try:
         f = open(".magicrpm.rc", "wb")
         parser.write(f)
-    except Exception, e:
-        print "Save config error."
+    except Exception as e:
+        print("Save config error.")
         raise
     f.close()
 
@@ -962,7 +961,7 @@ def main():
             elif choose[1] == "option":
                 OptionWindow()()
 
-    except Exception, e:
+    except Exception as e:
         ui.cleanup()
         raise
         save_config()
